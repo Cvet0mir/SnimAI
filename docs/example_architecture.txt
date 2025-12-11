@@ -1,0 +1,130 @@
+project-root/
+│
+├── backend/
+│   ├── app/
+│   │   ├── api/
+│   │   │   ├── v1/
+│   │   │   │   ├── routes/
+│   │   │   │   │   ├── users.py
+│   │   │   │   │   ├── sessions.py
+│   │   │   │   │   ├── summaries.py
+│   │   │   │   │   ├── flashcards.py
+│   │   │   │   │   ├── quizzes.py
+│   │   │   │   │   ├── learning.py
+│   │   │   │   └── __init__.py
+│   │   │   └── __init__.py
+│   │   │
+│   │   ├── core/
+│   │   │   ├── config.py
+│   │   │   ├── security.py
+│   │   │   └── utils.py
+│   │   │
+│   │   ├── db/
+│   │   │   ├── database.py
+│   │   │   ├── models.py
+│   │   │   ├── schemas.py
+│   │   │   └── migrations/
+│   │   │
+│   │   ├── ml/
+│   │   │   ├── ocr/
+│   │   │   │   ├── inference.py
+│   │   │   │   ├── preprocess.py
+│   │   │   │   └── model/
+│   │   │   │       ├── detection/
+│   │   │   │       ├── recognition/
+│   │   │   │       └── lang_data_bg/
+│   │   │   ├── layout/
+│   │   │   │   ├── yolov8_inference.py
+│   │   │   │   └── weights/
+│   │   │   ├── nlp/
+│   │   │   │   ├── summarizer.py
+│   │   │   │   ├── flashcard_generator.py
+│   │   │   │   ├── quiz_generator.py
+│   │   │   │   ├── concept_extraction.py
+│   │   │   │   └── embeddings.py
+│   │   │   ├── llm/
+│   │   │   │   ├── llama_runner.py
+│   │   │   │   └── prompts/
+│   │   │   │       ├── summary_prompt.txt
+│   │   │   │       ├── flashcard_prompt.txt
+│   │   │   │       └── quiz_prompt.txt
+│   │   │   └── __init__.py
+│   │   │
+│   │   ├── services/
+│   │   │   ├── storage_service.py
+│   │   │   ├── session_service.py
+│   │   │   ├── summary_service.py
+│   │   │   ├── quiz_service.py
+│   │   │   ├── flashcard_service.py
+│   │   │   └── learning_service.py
+│   │   │
+│   │   ├── main.py
+│   │   └── __init__.py
+│   │
+│   ├── tests/
+│   └── requirements.txt
+│
+│
+├── mobile/
+│   ├── lib/
+│   │   ├── main.dart
+│   │   ├── config/
+│   │   │   └── api.dart
+│   │   ├── screens/
+│   │   │   ├── home_screen.dart
+│   │   │   ├── scan_screen.dart
+│   │   │   ├── session_detail.dart
+│   │   │   ├── summary_screen.dart
+│   │   │   ├── flashcards_screen.dart
+│   │   │   ├── quiz_screen.dart
+│   │   │   └── learning_dashboard.dart
+│   │   ├── widgets/
+│   │   ├── models/
+│   │   │   ├── session.dart
+│   │   │   ├── summary.dart
+│   │   │   ├── flashcard.dart
+│   │   │   ├── quiz.dart
+│   │   │   └── user.dart
+│   │   ├── services/
+│   │   │   ├── api_service.dart
+│   │   │   ├── storage_cache.dart
+│   │   │   └── auth_service.dart
+│   │   ├── state/
+│   │   │   ├── session_provider.dart
+│   │   │   └── user_provider.dart
+│   │   ├── utils/
+│   │   └── theme/
+│   ├── pubspec.yaml
+│   └── assets/
+│       ├── icons/
+│       ├── images/
+│       └── fonts/
+│
+│
+├── data/
+│   ├── handwriting_dataset_bg/
+│   │   ├── images/
+│   │   └── labels/
+│   ├── layout_training/
+│   │   ├── images/
+│   │   ├── labels/
+│   └── test_samples/
+│
+├── models/
+│   ├── ocr/
+│   │   └── ppoocr_finetuned_bg/
+│   ├── layout/
+│   │   └── yolov8_bg.pt
+│   ├── embeddings/
+│   │   └── sentence_transformer_bg/
+│   └── llm/
+│       └── llama3_bg_q4.gguf
+│
+├── docs/
+│   ├── architecture-diagram.png
+│   ├── db-schema.sql
+│   ├── openapi.yaml
+│   ├── readme.md
+│   └── pitch.pdf
+│
+└── docker-compose.yml
