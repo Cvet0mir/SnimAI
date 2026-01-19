@@ -8,7 +8,7 @@ class Settings:
     OCR_MODEL_PATH: str = os.getenv("OCR_MODEL_PATH")
     YOLO_MODEL_PATH: str = os.getenv("YOLO_MODEL_PATH")
 
-    SQLITE_DB_PATH: str = os.getenv("SQLITE_DB_PATH")
+    DATABASE_URL: str = os.getenv("DATABASE_URL")
 
     JWT_SECRET_KEY: str = os.getenv("JWT_SECRET_KEY")
     JWT_ALGORITHM: str = os.getenv("JWT_ALGORITHM", "HS256")
