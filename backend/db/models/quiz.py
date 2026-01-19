@@ -3,12 +3,13 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from ..database import Base, datetime_tz
 
-class Flashcard(Base):
-    __tablename__ = "flashcards"
+class Quiz(Base):
+    __tablename__ = "quizzes"
 
     id: Mapped[int] = mapped_column(primary_key=True)
     note_id: Mapped[int] = relationship(ForeignKey("notes.id"))
     question: Mapped[str]
-    answer: Mapped[str]
+    options: Mapped[str]
+    correct_answer: Mapped[str]
     created_at: Mapped[datetime_tz] = mapped_column(default=func.now())
 
