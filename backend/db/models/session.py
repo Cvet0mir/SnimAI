@@ -4,6 +4,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from ..database import Base, str_100, datetime_tz
 from enums.status_enum import Status
 
+
 class Session(Base):
     __tablename__ = "sessions"
 
@@ -12,11 +13,11 @@ class Session(Base):
     name: Mapped[str_100] = mapped_column(unique=True)
     status: Mapped[Status] = mapped_column(
         Enum(
-            Status,
-            name="session_status"
+            Status, 
+            name="session_status",
+            create_type=False
         )
     )
     created_at: Mapped[datetime_tz] = mapped_column(default=func.now())
-    finished_at: Mapped[datetime_tz] = mapped_column()
+    finished_at: Mapped[datetime_tz | None] = mapped_column(nullable=True)
     note_count: Mapped[int]
-

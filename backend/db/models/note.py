@@ -7,12 +7,14 @@ from flashcard import Flashcard
 from quiz import Quiz
 from processing_job import ProcessingJob
 
+
 class Note(Base):
     __tablename__ = "notes"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    user_id: Mapped[int] = relationship(ForeignKey("users.id"))
-    session_id: Mapped[int] = relationship(ForeignKey("sessions.id"))
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    session_id: Mapped[int] = mapped_column(ForeignKey("sessions.id"))
+
     image_path: Mapped[str]
     raw_ocr_text: Mapped[str]
     clean_ocr_text: Mapped[str]
@@ -23,4 +25,3 @@ class Note(Base):
     flashcards: Mapped[list[Flashcard]] = relationship()
     quizzes: Mapped[list[Quiz]] = relationship()
     processing_jobs: Mapped[list[ProcessingJob]] = relationship()
-
