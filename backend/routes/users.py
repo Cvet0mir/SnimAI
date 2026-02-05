@@ -20,7 +20,7 @@ def update_profile(current_user: User = Depends(get_current_user)):
 def delete_profile(current_user: User = Depends(get_current_user)):
     raise HTTPException(
         status_code=status.HTTP_501_NOT_IMPLEMENTED,
-        detail="Profile updating not implemented yet"
+        detail="Profile removal not implemented yet"
     )
 
 
