@@ -1,4 +1,4 @@
-from orm_base import BaseORM
+from .orm_base import BaseORM
 
 class FlashcardBase(BaseORM):
     note_id: int

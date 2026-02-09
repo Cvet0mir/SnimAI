@@ -2,8 +2,8 @@ from sqlalchemy import func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from ..database import Base, str_100, datetime_tz
-from session import Session
-from note import Note
+from .session import Session
+from .note import Note
 
 
 class User(Base):

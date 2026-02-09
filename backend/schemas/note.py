@@ -1,8 +1,8 @@
 from typing import Annotated
 from datetime import datetime
-
 from fastapi import UploadFile
-from orm_base import BaseORM
+
+from .orm_base import BaseORM
 
 class NoteCreate(BaseORM):
     image_bytes: bytes

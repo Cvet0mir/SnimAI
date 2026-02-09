@@ -1,10 +1,10 @@
 from fastapi import FastAPI, APIRouter
 
-from routes.auth import router as auth_router
-from routes.notes import router as notes_router
-from routes.processing import router as processing_router
-from routes.sessions import router as sessions_router
-from routes.users import router as users_router
+from .routes.auth import router as auth_router
+from .routes.notes import router as notes_router
+from .routes.processing import router as processing_router
+from .routes.sessions import router as sessions_router
+from .routes.users import router as users_router
 
 
 def create_app() -> FastAPI:

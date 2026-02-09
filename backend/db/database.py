@@ -16,7 +16,7 @@ else:
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 str_100 = Annotated[str, 100]
-datetime_tz = Annotated[datetime, "tz"]
+datetime_tz = Annotated[datetime, DateTime(timezone=True)]
 
 class Base(DeclarativeBase):
     registry = registry(

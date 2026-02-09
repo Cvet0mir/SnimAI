@@ -1,7 +1,7 @@
 from typing import Optional, Literal
 from datetime import datetime
 
-from orm_base import BaseORM
+from .orm_base import BaseORM
 
 class ProcessingJobBase(BaseORM):
     id: int

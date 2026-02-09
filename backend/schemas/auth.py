@@ -1,6 +1,6 @@
 from typing import Annotated
 from pydantic import Field, EmailStr
-from orm_base import BaseORM
+from .orm_base import BaseORM
 
 class UserBase(BaseORM):
     name: str

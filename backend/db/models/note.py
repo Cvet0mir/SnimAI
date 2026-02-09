@@ -2,10 +2,10 @@ from sqlalchemy import ForeignKey, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from ..database import Base, str_100, datetime_tz
-from summary import Summary
-from flashcard import Flashcard
-from quiz import Quiz
-from processing_job import ProcessingJob
+from .summary import Summary
+from .flashcard import Flashcard
+from .quiz import Quiz
+from .processing_job import ProcessingJob
 
 
 class Note(Base):

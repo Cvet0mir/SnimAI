@@ -1,8 +1,8 @@
 from typing import Annotated, Optional, Literal
 from datetime import datetime
-
 from pydantic import Field
-from orm_base import BaseORM
+
+from .orm_base import BaseORM
 
 class SessionBase(BaseORM):
     name: Annotated[str, Field(max_length=125)]

@@ -2,8 +2,8 @@ from sqlalchemy import ForeignKey, Enum
 from sqlalchemy.orm import Mapped, mapped_column
 
 from ..database import Base, datetime_tz
-from enums.job_types import JobType
-from enums.status_enum import Status
+from .enums.job_types import JobType
+from .enums.status_enum import Status
 
 
 class ProcessingJob(Base):

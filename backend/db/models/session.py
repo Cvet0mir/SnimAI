@@ -2,7 +2,7 @@ from sqlalchemy import ForeignKey, Enum, func
 from sqlalchemy.orm import Mapped, mapped_column
 
 from ..database import Base, str_100, datetime_tz
-from enums.status_enum import Status
+from .enums.status_enum import Status
 
 
 class Session(Base):
