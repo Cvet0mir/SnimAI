@@ -5,6 +5,8 @@ load_dotenv()
 
 class Settings:
     EMBEDDINGS_MODEL_PATH: str = os.getenv("EMBEDDINGS_MODEL_PATH")
+    CHUNK_SIZE: str = os.getenv("CHUNK_SIZE")
+    TOP_K: str = os.getenv("TOP_K")
 
     LLM_MODEL_PATH: str = os.getenv("LLAMA_MODEL_ID")
     MAX_TOKENS: str = os.getenv("MAX_TOKENS")
