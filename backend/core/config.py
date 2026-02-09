@@ -5,8 +5,9 @@ load_dotenv()
 
 class Settings:
     EMBEDDINGS_MODEL_PATH: str = os.getenv("EMBEDDINGS_MODEL_PATH")
-    OCR_MODEL_PATH: str = os.getenv("OCR_MODEL_PATH")
-    YOLO_MODEL_PATH: str = os.getenv("YOLO_MODEL_PATH")
+
+    LLM_MODEL_PATH: str = os.getenv("LLAMA_MODEL_ID")
+    MAX_TOKENS: str = os.getenv("MAX_TOKENS")
 
     DATABASE_URL: str = os.getenv("DATABASE_URL")
 
