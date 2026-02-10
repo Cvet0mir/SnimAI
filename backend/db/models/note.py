@@ -2,10 +2,8 @@ from sqlalchemy import ForeignKey, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from ..database import Base, str_100, datetime_tz
-from .summary import Summary
-from .flashcard import Flashcard
-from .quiz import Quiz
-from .processing_job import ProcessingJob
+from .session import Session
+from .sessions_notes_relationship import association_table
 
 
 class Note(Base):
@@ -13,7 +11,6 @@ class Note(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
-    session_id: Mapped[int] = mapped_column(ForeignKey("sessions.id"))
 
     image_path: Mapped[str]
     raw_ocr_text: Mapped[str]
@@ -21,7 +18,6 @@ class Note(Base):
     language: Mapped[str_100]
     created_at: Mapped[datetime_tz] = mapped_column(default=func.now())
 
-    summaries: Mapped[list[Summary]] = relationship()
-    flashcards: Mapped[list[Flashcard]] = relationship()
-    quizzes: Mapped[list[Quiz]] = relationship()
-    processing_jobs: Mapped[list[ProcessingJob]] = relationship()
+    sessions: Mapped[list[Session]] = relationship(
+        secondary=association_table, back_populates="notes"
+    )
