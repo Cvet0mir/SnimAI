@@ -1,5 +1,6 @@
 import uuid
 from pathlib import Path
+from PIL import Image
 
 UPLOAD_DIR = Path("data/uploads")
 

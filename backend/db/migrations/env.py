@@ -1,9 +1,14 @@
 from logging.config import fileConfig
+import sys
+from pathlib import Path
+
+sys.path.append(str(Path(__file__).resolve().parents[3]))
 
 from sqlalchemy import create_engine, pool
 from alembic import context
 
 from backend.db.database import Base, DATABASE_URL
+import backend.db.models
 
 # Alembic Config object
 config = context.config
@@ -52,3 +57,6 @@ if context.is_offline_mode():
     run_migrations_offline()
 else:
     run_migrations_online()
+
+print(Base.metadata.tables.keys())
+

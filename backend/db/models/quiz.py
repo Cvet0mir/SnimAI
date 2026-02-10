@@ -7,7 +7,7 @@ class Quiz(Base):
     __tablename__ = "quizzes"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    note_id: Mapped[int] = mapped_column(ForeignKey("notes.id"))
+    session_id: Mapped[int] = mapped_column(ForeignKey("sessions.id"))
     question: Mapped[str]
     options: Mapped[str]
     correct_answer: Mapped[str]
