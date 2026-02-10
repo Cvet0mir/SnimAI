@@ -7,6 +7,8 @@ class Settings:
     HANDWRITING_MODEL_PATH: str = os.getenv("HANDWRITING_MODEL_PATH")
 
     EMBEDDINGS_MODEL_PATH: str = os.getenv("EMBEDDINGS_MODEL_PATH")
+    EMBEDDINGS_DATA_PATH: str = os.getenv("EMBEDDINGS_DATA_PATH")
+
     CHUNK_SIZE: str = os.getenv("CHUNK_SIZE")
     TOP_K: str = os.getenv("TOP_K")
 
