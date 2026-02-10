@@ -13,8 +13,8 @@ class Note(Base):
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
 
     image_path: Mapped[str]
-    raw_ocr_text: Mapped[str]
-    clean_ocr_text: Mapped[str]
+    raw_ocr_text: Mapped[str | None]
+    clean_ocr_text: Mapped[str | None]
     language: Mapped[str_100]
     created_at: Mapped[datetime_tz] = mapped_column(default=func.now())
 
