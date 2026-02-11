@@ -8,7 +8,7 @@ class SessionBase(BaseORM):
     name: Annotated[str, Field(max_length=125)]
 
 class SessionCreate(SessionBase):
-    ...
+    status: Literal["pending", "running", "done", "failed"]
 
 class SessionOut(SessionBase):
     id: int
@@ -16,4 +16,3 @@ class SessionOut(SessionBase):
     status: Literal["pending", "running", "done", "failed"]
     created_at: datetime
     finished_at: Optional[datetime]
-
