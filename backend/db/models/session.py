@@ -11,7 +11,7 @@ class Session(Base):
     __tablename__ = "sessions"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", name="fk_sessions_user"))
     name: Mapped[str_100] = mapped_column(unique=True)
     status: Mapped[Status] = mapped_column(
         Enum(
