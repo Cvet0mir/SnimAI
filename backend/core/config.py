@@ -4,6 +4,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class Settings:
+    IMAGE_UPLOAD_DIR: str = os.getenv("IMAGE_UPLOAD_DIR")
+
     HANDWRITING_MODEL_PATH: str = os.getenv("HANDWRITING_MODEL_PATH")
 
     EMBEDDINGS_MODEL_PATH: str = os.getenv("EMBEDDINGS_MODEL_PATH")

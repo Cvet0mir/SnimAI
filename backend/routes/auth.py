@@ -1,5 +1,7 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session as DBSession
 
 from ..dependecies import get_db
 from ..db.models.user import User
@@ -16,7 +18,7 @@ from ..dependecies import get_current_user
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 @router.post("/register", response_model=UserOut, status_code=status.HTTP_201_CREATED)
-def register(data: UserCreate, db: Session = Depends(get_db)):
+def register(data: UserCreate, db: Annotated[DBSession, Depends(get_db)]):
     existing_user = db.query(User).filter(User.email == data.email).first()
     if existing_user:
         raise HTTPException(
@@ -36,11 +38,11 @@ def register(data: UserCreate, db: Session = Depends(get_db)):
     return user
 
 @router.get("/me", response_model=UserOut)
-def me(current_user: User = Depends(get_current_user)):
+def me(current_user: Annotated[User, Depends(get_current_user)]):
     return current_user
 
 @router.post("/login", response_model=Token)
-def login(data: UserLogin, db: Session = Depends(get_db)):
+def login(data: UserLogin, db: Annotated[DBSession, Depends(get_db)]):
     user = db.query(User).filter(User.email == data.email).first()
 
     if not user or not verify_password(data.password, user.hashed_password):

@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 
 from ..db.models.user import User
+from ..db.models.note import Note
 from ..dependecies import get_current_user
 
 router = APIRouter(prefix="/sessions", tags=["sessions"])
@@ -31,4 +32,18 @@ def delete_session(session_id: int, current_user: User = Depends(get_current_use
     raise HTTPException(
         status_code=status.HTTP_501_NOT_IMPLEMENTED,
         detail="Session removal by id not implemented yet"
+    )
+
+@router.get("/{session_id}/notes", status_code=status.HTTP_501_NOT_IMPLEMENTED)
+def get_session_notes(session_id: int, current_user: User = Depends(get_current_user)):
+    raise HTTPException(
+        status_code=status.HTTP_501_NOT_IMPLEMENTED,
+        detail="Notes retrieval not implemented yet"
+    )
+
+@router.get("/{session_id}/notes/{note_id}", status_code=status.HTTP_501_NOT_IMPLEMENTED)
+def get_session_note_by_id(session_id: int, note_id: int, current_user: User = Depends(get_current_user)):
+    raise HTTPException(
+        status_code=status.HTTP_501_NOT_IMPLEMENTED,
+        detail="Singular note retrieval not implemented yet"
     )
