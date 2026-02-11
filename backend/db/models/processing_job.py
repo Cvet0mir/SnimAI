@@ -12,7 +12,7 @@ class ProcessingJob(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
 
     session_id: Mapped[int | None] = mapped_column(
-        ForeignKey("sessions.id"),
+        ForeignKey("sessions.id", name="fk_processing_jobs_session"),
         nullable=True
     )
     note_id: Mapped[int | None] = mapped_column(

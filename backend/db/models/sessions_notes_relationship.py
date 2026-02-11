@@ -2,8 +2,8 @@ from sqlalchemy import Table, Column, ForeignKey
 from ..database import Base
 
 association_table = Table(
-    "association_table",
+    "sessions_notes",
     Base.metadata,
-    Column("left_id", ForeignKey("left_table.id"), primary_key=True),
-    Column("right_id", ForeignKey("right_table.id"), primary_key=True),
+    Column("session_id", ForeignKey("sessions.id", name="fk_sessions_table"), primary_key=True),
+    Column("note_id", ForeignKey("notes.id", name="fk_notes_table"), primary_key=True),
 )

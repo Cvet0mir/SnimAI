@@ -2,7 +2,7 @@ from sqlalchemy import ForeignKey, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from ..database import Base, str_100, datetime_tz
-from .session import Session
+# from .session import Session
 from .sessions_notes_relationship import association_table
 
 
@@ -10,7 +10,7 @@ class Note(Base):
     __tablename__ = "notes"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", name="fk_notes_user"))
 
     image_path: Mapped[str]
     raw_ocr_text: Mapped[str | None]
@@ -18,6 +18,8 @@ class Note(Base):
     language: Mapped[str_100]
     created_at: Mapped[datetime_tz] = mapped_column(default=func.now())
 
-    sessions: Mapped[list[Session]] = relationship(
-        secondary=association_table, back_populates="notes"
+    sessions: Mapped[list["Session"]] = relationship(
+        "Session",
+        secondary=association_table, 
+        back_populates="notes",
     )

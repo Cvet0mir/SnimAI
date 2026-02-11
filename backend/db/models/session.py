@@ -2,11 +2,6 @@ from sqlalchemy import ForeignKey, Enum, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from ..database import Base, str_100, datetime_tz
-from .note import Note
-from .summary import Summary
-from .flashcard import Flashcard
-from .quiz import Quiz
-from .processing_job import ProcessingJob
 from .sessions_notes_relationship import association_table
 
 from .enums.status_enum import Status
@@ -28,10 +23,12 @@ class Session(Base):
     created_at: Mapped[datetime_tz] = mapped_column(default=func.now())
     finished_at: Mapped[datetime_tz | None] = mapped_column(nullable=True)
 
-    notes: Mapped[list[Note]] = relationship(
-        secondary=association_table, back_populates="sessions"
+    notes: Mapped[list["Note"]] = relationship(
+        "Note",
+        secondary=association_table, 
+        back_populates="sessions"
     )
-    summaries: Mapped[list[Summary]] = relationship()
-    flashcards: Mapped[list[Flashcard]] = relationship()
-    quizzes: Mapped[list[Quiz]] = relationship()
-    processing_jobs: Mapped[list[ProcessingJob]] = relationship()
+    summaries: Mapped[list["Summary"]] = relationship()
+    flashcards: Mapped[list["Flashcard"]] = relationship()
+    quizzes: Mapped[list["Quiz"]] = relationship()
+    processing_jobs: Mapped[list["ProcessingJob"]] = relationship()

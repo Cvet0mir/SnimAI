@@ -7,7 +7,7 @@ class Flashcard(Base):
     __tablename__ = "flashcards"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    session_id: Mapped[int] = mapped_column(ForeignKey("sessions.id"))
+    session_id: Mapped[int] = mapped_column(ForeignKey("sessions.id", name="fk_flashcards_session"))
     question: Mapped[str]
     answer: Mapped[str]
     created_at: Mapped[datetime_tz] = mapped_column(default=func.now())
