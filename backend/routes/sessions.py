@@ -8,10 +8,14 @@ from ..dependecies import get_db, get_current_user
 from ..db.models.user import User
 from ..db.models.note import Note
 from ..db.models.session import Session
+from ..db.models.summary import Summary
+from ..db.models.quiz import Quiz
 from ..db.models.enums.status_enum import Status
 
 from ..schemas.session import SessionCreate, SessionOut
 from ..schemas.note import NoteOut
+from ..schemas.summary import SummaryOut
+from ..schemas.quiz import QuizOut
 
 
 router = APIRouter(prefix="/sessions", tags=["sessions"])
@@ -72,7 +76,10 @@ def get_session(
     )
 
     if not session:
-        raise HTTPException(status_code=404, detail="Сесията не е намерена")
+        raise HTTPException(
+            status_code=404, 
+            detail="Сесията не е намерена"
+        )
 
     return session
 
@@ -93,7 +100,10 @@ def delete_session(
     )
 
     if not session:
-        raise HTTPException(status_code=404, detail="Сесията не е намерена")
+        raise HTTPException(
+            status_code=404, 
+            detail="Сесията не е намерена"
+        )
 
     db.delete(session)
     db.commit()
@@ -117,7 +127,10 @@ def get_session_notes(
     )
 
     if not session:
-        raise HTTPException(status_code=404, detail="Сесията не е намерена")
+        raise HTTPException(
+            status_code=404, 
+            detail="Сесията не е намерена"
+        )
 
     return session.notes
 
@@ -147,3 +160,101 @@ def get_session_note_by_id(
         )
 
     return note
+
+
+@router.get("/{session_id}/summary", response_model=SummaryOut)
+def get_session_summary(
+    session_id: int,
+    db: Annotated[DBSession, Depends(get_db)],
+    current_user: Annotated[User, Depends(get_current_user)],
+):
+    session = (
+        db.query(Session)
+        .filter(
+            Session.id == session_id,
+            Session.user_id == current_user.id
+        )
+        .first()
+    )
+
+    if not session:
+        raise HTTPException(
+            status_code=404,
+            detail="Сесията не е намерена"
+        )
+
+    summary = (
+        db.query(Summary)
+        .filter(
+            Summary.session_id == session_id
+        )
+        .first()
+    )
+
+    if not summary:
+        raise HTTPException(
+            status_code=404, 
+            detail="Обобщението не е намерено"
+        )
+
+    return summary
+
+
+@router.get("/{session_id}/quizzes", response_model=list[QuizOut])
+def get_session_quizzes(
+    session_id: int,
+    db: Annotated[DBSession, Depends(get_db)],
+    current_user: Annotated[User, Depends(get_current_user)],
+):
+    session = (
+        db.query(Session)
+        .filter(
+            Session.id == session_id,
+            Session.user_id == current_user.id
+        )
+        .first()
+    )
+
+    if not session:
+        raise HTTPException(
+            status_code=404, 
+            detail="Сесията не е намерена"
+        )
+
+    quizzes = (
+        db.query(Quiz)
+        .filter(
+            Quiz.session_id == session_id
+        )
+        .all()
+    )
+    return quizzes
+
+
+@router.get("/{session_id}/quizzes/{quiz_id}", response_model=QuizOut)
+def get_session_quiz_by_id(
+    session_id: int,
+    quiz_id: int,
+    db: Annotated[DBSession, Depends(get_db)],
+    current_user: Annotated[User, Depends(get_current_user)]
+):
+    quiz = (
+        db.query(Quiz)
+        .join(Session)
+        .filter(
+            Quiz.id == quiz_id,
+            Quiz.session_id == session_id,
+            Session.user_id == current_user.id
+        )
+        .first()
+    )
+
+    if not quiz:
+        raise HTTPException(
+            status_code=404,
+            detail="Тестът не е намерен"
+        )
+
+    return quiz
+
+
