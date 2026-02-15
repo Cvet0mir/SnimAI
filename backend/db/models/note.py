@@ -22,4 +22,5 @@ class Note(Base):
         "Session",
         secondary=association_table, 
         back_populates="notes",
+        cascade="all, delete-orphan"
     )

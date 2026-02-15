@@ -12,4 +12,8 @@ class Quiz(Base):
     created_at: Mapped[datetime_tz] = mapped_column(default=func.now())
 
     session: Mapped["Session"] = relationship(back_populates="quizzes")
-    questions: Mapped[list["Question"]] = relationship("Question", back_populates="quiz")
+    questions: Mapped[list["Question"]] = relationship(
+        "Question", 
+        back_populates="quiz", 
+        cascade="all, delete-orphan"
+    )

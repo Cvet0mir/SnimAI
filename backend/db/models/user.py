@@ -15,5 +15,5 @@ class User(Base):
     hashed_password: Mapped[str]
     created_at: Mapped[datetime_tz] = mapped_column(default=func.now())
 
-    sessions: Mapped[list[Session]] = relationship()
-    notes: Mapped[list[Note]] = relationship()
+    sessions: Mapped[list[Session]] = relationship(cascade="all, delete-orphan")
+    notes: Mapped[list[Note]] = relationship(cascade="all, delete-orphan")

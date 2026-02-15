@@ -26,9 +26,10 @@ class Session(Base):
     notes: Mapped[list["Note"]] = relationship(
         "Note",
         secondary=association_table, 
-        back_populates="sessions"
+        back_populates="sessions",
+        cascade="all, delete-orphan"
     )
-    summaries: Mapped[list["Summary"]] = relationship()
-    flashcards: Mapped[list["Flashcard"]] = relationship()
-    quizzes: Mapped[list["Quiz"]] = relationship()
-    processing_jobs: Mapped[list["ProcessingJob"]] = relationship()
+    summaries: Mapped[list["Summary"]] = relationship(cascade="all, delete-orphan")
+    flashcards: Mapped[list["Flashcard"]] = relationship(cascade="all, delete-orphan")
+    quizzes: Mapped[list["Quiz"]] = relationship(cascade="all, delete-orphan")
+    processing_jobs: Mapped[list["ProcessingJob"]] = relationship(cascade="all, delete-orphan")
