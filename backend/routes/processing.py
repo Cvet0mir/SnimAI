@@ -1,6 +1,9 @@
-from fastapi import APIRouter, Depends, status, HTTPException
-from sqlalchemy.orm import Session as DbSession
+from typing import Annotated
 
+from fastapi import APIRouter, Depends, status, HTTPException, BackgroundTasks
+from sqlalchemy.orm import Session as DBSession
+
+from ..schemas.session import SessionOut
 from ..db.models.user import User, Session
 from ..db.models.enums.status_enum import Status
 from ..dependecies import get_current_user, get_db
@@ -13,10 +16,10 @@ router = APIRouter(prefix="/processing", tags=["processing"])
 def start_processing(
     session_id: int,
     background_tasks: BackgroundTasks,
-    current_user: User = Depends(get_current_user), 
-    db: DbSession = Depends(get_db)
+    db: Annotated[DBSession, Depends(get_db)],
+    current_user: Annotated[User, Depends(get_current_user)]
 ):
-    session = db.query(Session).first(Session.id == session_id)
+    session = db.query(Session).filter(Session.id == session_id).first()
 
     if session.user_id != current_user.id:
         raise HTTPException(
@@ -35,18 +38,47 @@ def start_processing(
     return {"message": "Обработването започна"}
 
 
-@router.get("/status/{session_id}", status_code=status.HTTP_501_NOT_IMPLEMENTED)
-def get_status(session_id: int, current_user: User = Depends(get_current_user)):
-    raise HTTPException(
-        status_code=status.HTTP_501_NOT_IMPLEMENTED,
-        detail="Getting the status of the processing for a session not implemented yet"
-    )
+@router.get("/status/{session_id}")
+def get_status(
+    session_id: int,
+    db: Annotated[DBSession, Depends(get_db)],
+    current_user: Annotated[User, Depends(get_current_user)]
+):
+    session = db.query(Session).filter(Session.id == session_id).first()
 
-@router.get("/result/{session_id}", status_code=status.HTTP_501_NOT_IMPLEMENTED)
-def get_result(session_id: int, current_user: User = Depends(get_current_user)):
-    raise HTTPException(
-        status_code=status.HTTP_501_NOT_IMPLEMENTED,
-        detail="Getting the result from the processing for a session not implemented yet"
-    )
+    if not session:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Сесията не е намерена"
+        )
+
+    return {
+        "session_id": session.id,
+        "status": session.status.value,
+        "created_at": session.created_at,
+        "finished_at": session.finished_at
+    }
+
+
+@router.get("/result/{session_id}", response_model=SessionOut)
+def get_result(
+    session_id: int,
+    db: Annotated[DBSession, Depends(get_db)],
+    current_user: Annotated[User, Depends(get_current_user)]
+):
+    session = db.query(Session).filter(Session.id == session_id).first()
+
+    if not session:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Сесията не е намерена"
+        )
+    if session.status != Status.done:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Обработването не е завършило"
+        )
+
+    return session
 
 
