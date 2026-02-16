@@ -14,7 +14,7 @@ from fastapi import (
 )
 from sqlalchemy.orm import Session as DBSession
 
-from ..dependecies import get_db, get_current_user
+from ..dependencies import get_db, get_current_user
 from ..core.config import settings
 
 from ..db.models.user import User

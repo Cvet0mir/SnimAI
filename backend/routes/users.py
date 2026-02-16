@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session as DBSession
 
 from ..db.models.user import User
 from ..schemas.auth import UserOut, UserUpdate
-from ..dependecies import get_current_user, get_db
+from ..dependencies import get_current_user, get_db
 from ..core.security import hash_password
 
 router = APIRouter(prefix="/users", tags=["users"])

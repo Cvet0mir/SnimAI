@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session as DBSession
 from ..schemas.session import SessionOut
 from ..db.models.user import User, Session
 from ..db.models.enums.status_enum import Status
-from ..dependecies import get_current_user, get_db
+from ..dependencies import get_current_user, get_db
 
 from ..services.processing_pipeline import run_processing_pipeline
 

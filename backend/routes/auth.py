@@ -3,7 +3,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session as DBSession
 
-from ..dependecies import get_db
+from ..dependencies import get_db
 from ..db.models.user import User
 from ..schemas.auth import UserCreate, UserLogin, UserOut, Token, RefreshToken
 from ..core.security import (
@@ -13,7 +13,7 @@ from ..core.security import (
     create_refresh_token,
     decode_token
 )
-from ..dependecies import get_current_user
+from ..dependencies import get_current_user
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 

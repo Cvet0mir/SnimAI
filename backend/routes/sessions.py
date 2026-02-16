@@ -9,7 +9,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, File, Form, Uploa
 from sqlalchemy.orm import Session as DBSession
 
 from ..core.config import settings
-from ..dependecies import get_db, get_current_user
+from ..dependencies import get_db, get_current_user
 
 from ..db.models.user import User
 from ..db.models.note import Note
