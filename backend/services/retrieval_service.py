@@ -2,6 +2,8 @@ import faiss
 import numpy as np
 from ..ml.embedding_model import embedding_model
 
+from ..core.config import settings
+
 DIM = 384
 
 class RetrievalService:
@@ -9,7 +11,7 @@ class RetrievalService:
         self._indices = {}
         self._chunks = {}
 
-    def index_text(self, session_id: int, text: str, chunk_size: int = 400):
+    def index_text(self, session_id: int, text: str, chunk_size: int = settings.CHUNK_SIZE):
         words = text.split()
         chunks = [" ".join(words[i:i + chunk_size]) for i in range(0, len(words), chunk_size)]
 
@@ -25,7 +27,7 @@ class RetrievalService:
         index.add(np.array(vectors, dtype="float32"))
         self._chunks[session_id].extend(chunks)
 
-    def retrieve_chunks(self, session_id: int, query: str, top_k: int = 5) -> list[str]:
+    def retrieve_chunks(self, session_id: int, query: str, top_k: int = settings.TOP_K) -> list[str]:
         if session_id not in self._indices or not self._chunks[session_id]:
             return []
 
