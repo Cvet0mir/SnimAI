@@ -207,7 +207,7 @@ marimo/_lsp/
 __marimo__/
 
 .idea
-data/cyrillic-htr-model/
+models/cyrillic-htr-model/
 data/embedding_data/
 data/uploads/
 
