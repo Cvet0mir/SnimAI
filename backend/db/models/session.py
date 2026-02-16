@@ -32,4 +32,3 @@ class Session(Base):
     summaries: Mapped[list["Summary"]] = relationship(cascade="all, delete-orphan")
     flashcards: Mapped[list["Flashcard"]] = relationship(cascade="all, delete-orphan")
     quizzes: Mapped[list["Quiz"]] = relationship(cascade="all, delete-orphan")
-    processing_jobs: Mapped[list["ProcessingJob"]] = relationship(cascade="all, delete-orphan")
