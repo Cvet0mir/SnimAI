@@ -1,8 +1,14 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, status
+import os
+import uuid
+from pathlib import Path
+from typing import Annotated
+
+from fastapi import APIRouter, Depends, HTTPException, status, File, Form, UploadFile
 from sqlalchemy.orm import Session as DBSession
 
+from ..core.config import settings
 from ..dependecies import get_db, get_current_user
 
 from ..db.models.user import User
@@ -19,6 +25,10 @@ from ..schemas.quiz import QuizOut
 
 
 router = APIRouter(prefix="/sessions", tags=["sessions"])
+
+UPLOAD_DIR = Path(settings.IMAGE_UPLOAD_DIR)
+UPLOAD_DIR.mkdir(exist_ok=True)
+
 
 @router.post("/", response_model=SessionOut, status_code=status.HTTP_201_CREATED)
 def create_session(
@@ -108,6 +118,81 @@ def delete_session(
     db.delete(session)
     db.commit()
 
+    return None
+
+
+@router.post("/{session_id}/notes", response_model=NoteOut, status_code=status.HTTP_201_CREATED)
+async def create_note(
+    session_id: int,
+    image: Annotated[UploadFile, File(...)],
+    language: Annotated[str, Form(...)],
+    db: Annotated[DBSession, Depends(get_db)],
+    current_user: Annotated[User, Depends(get_current_user)],
+):
+    session = (
+        db.query(Session)
+        .filter(
+            Session.id == session_id,
+            Session.user_id == current_user.id,
+        )
+        .first()
+    )
+
+    if not session:
+        raise HTTPException(status_code=404, detail="Сесията не е намерена")
+
+    img_extension = Path(image.filename).suffix
+    unique_filename = f"{uuid.uuid4()}{img_extension}"
+    file_path = UPLOAD_DIR / unique_filename
+
+    with open(file_path, "wb") as buffer:
+        content = await image.read()
+        buffer.write(content)
+
+    note = Note(
+        user_id=current_user.id,
+        image_path=str(file_path),
+        raw_ocr_text=None,
+        clean_ocr_text=None,
+        language=language,
+    )
+    note.sessions.append(session)
+
+    db.add(note)
+    db.commit()
+    db.refresh(note)
+    return note
+
+@router.delete("/{session_id}/notes/{note_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_note(
+    session_id: int,
+    note_id: int,
+    db: Annotated[DBSession, Depends(get_db)],
+    current_user: Annotated[User, Depends(get_current_user)],
+):
+    session = (
+        db.query(Session)
+        .filter(
+            Session.id == session_id,
+            Session.user_id == current_user.id,
+        )
+        .first()
+    )
+    note = next(
+        filter(lambda x: x.id == note_id, session.notes), 
+        None
+    )
+
+    if not note:
+        raise HTTPException(
+            status_code=404, 
+            detail="Бележката не намерена"
+        )
+    if os.path.exists(note.image_path):
+        os.remove(note.image_path)
+
+    db.delete(note)
+    db.commit()
     return None
 
 
