@@ -1,44 +1,57 @@
-from sqlalchemy.orm import Session as DbSession
+from sqlalchemy.orm import Session as DBSession
 from ..db.models.session import Session
 from ..db.models.enums.status_enum import Status
 
-from ..dependecies import get_db
+from ..dependencies import get_db
 from ..utils.text import chunk_text
 
-from .ocr_service import run_ocr
-from .retrieval_service import add_chunks_to_index, retrieve_relevant
+from .ocr_service import OCRService
+from .retrieval_service import RetrievalService
 from .summarizing_service import summarize_text
 from .quiz_service import create_quiz
 
+ocr_service = OCRService()
+retrieval_service = RetrievalService()
+
 
 def run_processing_pipeline(session_id: int, num_questions: int):
-    db: DbSession = get_db()
+    db: DBSession = get_db()
     try:
-        session = db.query(Session).first(Session.id == session_id)
+        session = db.query(Session).filter(Session.id == session_id).first()
+        if not session:
+            raise ValueError(f"Session {session_id} not found")
+
+        retrieval_service.reset_session(session_id)
+
         images = [x.image_path for x in session.notes]
-
-        text = ""
+        full_text = ""
         for img_path in images:
-            text += run_ocr(img_path) + "\n"
+            recognized_text = ocr_service.extract_text(img_path)
+            full_text += recognized_text + "\n"
 
-        chunks = chunk_text(text)
-        add_chunks_to_index(chunks)
+        chunks = chunk_text(full_text)
+        for chunk in chunks:
+            retrieval_service.index_text(session_id, chunk)
 
-        chunks = retrieve_relevant("main ideas and key concepts")
-        context = "\n\n".join(chunks)
-        summary = summarize_text(text)
+        main_ideas = retrieval_service.retrieve_chunks(session_id, "main ideas and key concepts")
+        context_main = "\n\n".join(main_ideas)
+        summary = summarize_text(context_main)
 
-        chunks = retrieve_relevant("important facts and definitions")
-        context = "\n\n".join(chunks)
-        quiz = create_quiz(text)
+        facts = retrieval_service.retrieve_chunks(session_id, "important facts and definitions")
+        context_facts = "\n\n".join(facts)
+        quiz = create_quiz(context_facts, num_questions=num_questions)
 
-        session.summaries.add(summary)
+        session.summaries.append(summary)
         session.quizzes.extend(quiz)
         session.status = Status.done
+
         db.commit()
-        db.refresh()
+        db.refresh(session)
 
     except Exception as exc:
-        session.status = Status.failed
-        raise RuntimeError("Не успяхме да обработим заявката ви. Моля, опитайте отново")
-
+        if session:
+            session.status = Status.failed
+            db.commit()
+        raise RuntimeError(
+            "Не успяхме да обработим заявката ви. Моля, опитайте отново"
+        ) from exc
