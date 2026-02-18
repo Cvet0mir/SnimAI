@@ -9,7 +9,7 @@ import '../api/exceptions.dart';
 class AuthService {
   final String baseUrl = AppConstants.baseUrl;
 
-  Future<void> login(String email, String name, String password) async {
+  Future<void> login(String email,String password) async {
     final url = Uri.parse('$baseUrl${ApiEndpoints.login}');
 
     final response = await http.post(
@@ -17,7 +17,6 @@ class AuthService {
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'email': email,
-        'name': name,
         'password': password,
       }),
     );
