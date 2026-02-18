@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import '../../features/login_page.dart';
+import '../../features/register_page.dart';
 
 class AppRouter {
   static Map<String, Widget Function(BuildContext)> routes = {
-    '/': (context) => const PlaceholderPage(
-        title: 'Mock Home',
-      ),
+    '/': (context) => const LoginPage(),
+    '/login': (context) => const LoginPage(),
+    '/register': (context) => const RegisterPage(),
+    '/home': (context) => const PlaceholderPage(title: 'Home'),
   };
 }
 

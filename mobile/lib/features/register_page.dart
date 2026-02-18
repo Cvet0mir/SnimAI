@@ -68,13 +68,19 @@ class _RegisterPageState extends State<RegisterPage> {
                 children: [
                   TextField(
                     controller: _emailController,
-                    decoration: const InputDecoration(labelText: 'Имейл'),
+                    decoration: const InputDecoration(labelText: 'Имейл:'),
+                  ),
+                  const SizedBox(height: 16),
+                  TextField(
+                    controller: _nameController,
+                    obscureText: true,
+                    decoration: const InputDecoration(labelText: 'Име:'),
                   ),
                   const SizedBox(height: 16),
                   TextField(
                     controller: _passwordController,
                     obscureText: true,
-                    decoration: const InputDecoration(labelText: 'Парола'),
+                    decoration: const InputDecoration(labelText: 'Парола:'),
                   ),
                   const SizedBox(height: 24),
                   PrimaryButton(
