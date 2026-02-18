@@ -5,9 +5,9 @@ class ApiEndpoints {
   static const String register = '$_base/auth/register';
   static const String refresh = '$_base/auth/refresh';
 
-  static const String profile = '$_base/users/me';
-  static const String updateProfile = '$_base/users/me';
-  static const String deleteProfile = '$_base/users/me';
+  static const String profile = '$_base/auth/me';
+  static const String updateProfile = '$_base/auth/me';
+  static const String deleteProfile = '$_base/auth/me';
 
   static const String createSession = '$_base/sessions';
   static const String getSessions = '$_base/sessions';
