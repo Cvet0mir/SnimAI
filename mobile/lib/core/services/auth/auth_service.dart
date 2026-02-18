@@ -9,7 +9,7 @@ import '../api/exceptions.dart';
 class AuthService {
   final String baseUrl = AppConstants.baseUrl;
 
-  Future<void> login(String email, String password) async {
+  Future<void> login(String email, String name, String password) async {
     final url = Uri.parse('$baseUrl${ApiEndpoints.login}');
 
     final response = await http.post(
@@ -17,6 +17,7 @@ class AuthService {
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'email': email,
+        'name': name,
         'password': password,
       }),
     );
@@ -35,7 +36,7 @@ class AuthService {
     await prefs.setString(AppConstants.refreshTokenKey, data['refresh_token']);
   }
 
-  Future<void> register(String email, String password) async {
+  Future<void> register(String email, String name, String password) async {
     final url = Uri.parse('$baseUrl${ApiEndpoints.register}');
 
     final response = await http.post(
@@ -43,6 +44,7 @@ class AuthService {
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'email': email,
+        'name': name,
         'password': password,
       }),
     );

@@ -28,6 +28,7 @@ def register(data: UserCreate, db: Annotated[DBSession, Depends(get_db)]):
 
     user = User(
         email=data.email,
+        name=data.name,
         hashed_password=hash_password(data.password)
     )
 
