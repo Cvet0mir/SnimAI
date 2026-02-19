@@ -1,11 +1,5 @@
-from transformers import AutoModelForCausalLM, AutoTokenizer
-import torch
+import os
+from groq import Groq
 from ..core.config import settings
 
-tokenizer = AutoTokenizer.from_pretrained(settings.LLM_MODEL_PATH)
-device = "cpu"
-
-llm_model = AutoModelForCausalLM.from_pretrained(
-    settings.LLM_MODEL_PATH,
-    torch_dtype=torch.float32
-)
+llm_client = Groq(api_key=os.getenv("GROQ_API_KEY"))

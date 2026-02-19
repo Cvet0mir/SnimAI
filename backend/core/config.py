@@ -14,7 +14,7 @@ class Settings:
     CHUNK_SIZE: str = os.getenv("CHUNK_SIZE")
     TOP_K: str = os.getenv("TOP_K")
 
-    LLM_MODEL_PATH: str = os.getenv("LLAMA_MODEL_ID")
+    GROQ_API_KEY: str = os.getenv("GROQ_API_KEY")
     MAX_TOKENS: str = os.getenv("MAX_TOKENS")
 
     DATABASE_URL: str = os.getenv("DATABASE_URL")
