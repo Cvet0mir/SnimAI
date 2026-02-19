@@ -37,6 +37,7 @@ dependencies:
   flutter_dotenv: ^6.0.0
   http: ^1.2.0
   shared_preferences: ^2.2.2
+  go_router: ^14.2.0
 
 dev_dependencies:
   flutter_test:
@@ -92,4 +93,5 @@ flutter:
   # see https://flutter.dev/to/font-from-package
   assets:
     - .env
+    - assets/logo.png
 
