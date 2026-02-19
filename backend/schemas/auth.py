@@ -4,12 +4,12 @@ from .orm_base import BaseORM
 
 
 class UserBase(BaseORM):
-    name: str
     email: EmailStr
-class UserCreate(UserBase):
     password: Annotated[str, Field(min_length=8)]
+class UserCreate(UserBase):
+    name: str
 
-class UserLogin(UserCreate):
+class UserLogin(UserBase):
     ...
 
 class UserUpdate(BaseORM):
@@ -17,8 +17,10 @@ class UserUpdate(BaseORM):
     email: Optional[EmailStr] = None
     password: Optional[Annotated[str, Field(min_length=8)]] = None
 
-class UserOut(UserBase):
+class UserOut(BaseORM):
     id: int
+    name: str
+    email: str
 
 
 class Token(BaseORM):
