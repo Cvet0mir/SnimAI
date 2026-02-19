@@ -6,8 +6,7 @@ class TextDetectionService:
     def __init__(self):
         self.detector = PaddleOCR(
             use_angle_cls=True,
-            lang="en",
-            rec=False
+            lang="en"
         )
 
     def detect_boxes(self, image_path: str):
