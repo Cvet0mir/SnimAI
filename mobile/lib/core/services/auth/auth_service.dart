@@ -22,11 +22,25 @@ class AuthService {
     );
 
     if (response.statusCode != 200) {
-      throw ApiException(
-        jsonDecode(response.body)['detail'] ?? 'Грешен имейл или парола',
-        statusCode: response.statusCode,
-      );
+    final decoded = jsonDecode(response.body);
+    final detail = decoded['detail'];
+
+    String errorMessage;
+
+    if (detail is String) {
+      errorMessage = detail;
+    } else if (detail is List) {
+      errorMessage = detail.map((e) => e['msg']).join(', ');
+    } else {
+      errorMessage = 'Грешен имейл или парола';
     }
+
+    throw ApiException(
+      errorMessage,
+      statusCode: response.statusCode,
+    );
+  }
+
 
     final data = jsonDecode(response.body);
 

@@ -73,7 +73,6 @@ class _RegisterPageState extends State<RegisterPage> {
                   const SizedBox(height: 16),
                   TextField(
                     controller: _nameController,
-                    obscureText: true,
                     decoration: const InputDecoration(labelText: 'Име:'),
                   ),
                   const SizedBox(height: 16),
