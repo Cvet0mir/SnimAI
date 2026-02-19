@@ -21,6 +21,5 @@ class Note(Base):
     sessions: Mapped[list["Session"]] = relationship(
         "Session",
         secondary=association_table, 
-        back_populates="notes",
-        cascade="all, delete-orphan"
+        back_populates="notes"
     )

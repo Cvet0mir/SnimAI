@@ -26,8 +26,7 @@ class Session(Base):
     notes: Mapped[list["Note"]] = relationship(
         "Note",
         secondary=association_table, 
-        back_populates="sessions",
-        cascade="all, delete-orphan"
+        back_populates="sessions"
     )
     summaries: Mapped[list["Summary"]] = relationship(cascade="all, delete-orphan")
     flashcards: Mapped[list["Flashcard"]] = relationship(cascade="all, delete-orphan")
