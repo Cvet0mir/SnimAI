@@ -13,22 +13,13 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
       title: 'Home Page',
       body: const Center(child: Text("Home Page")),
 
-      bottomNavigationBar: CustomBottomMenu(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-      ),
+      bottomNavigationBar: CustomBottomMenu(currentIndex: _selectedIndex),
     );
   }
 }
