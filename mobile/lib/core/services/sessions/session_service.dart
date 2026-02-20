@@ -40,4 +40,20 @@ class SessionService {
 
     return data.length;
   }
+
+  Future<List<dynamic>> getSessions() async {
+    final url = Uri.parse('$baseUrl${ApiEndpoints.getSessions}');
+    final headers = await _authHeaders();
+
+    final response = await http.get(url, headers: headers);
+
+    if (response.statusCode != 200) {
+      throw ApiException(
+        "Failed to load sessions",
+        statusCode: response.statusCode,
+      );
+    }
+
+    return jsonDecode(response.body);
+  }
 }
