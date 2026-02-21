@@ -15,7 +15,7 @@ class AuthService {
     final token = prefs.getString(AppConstants.accessTokenKey);
 
     if (token == null) {
-      throw ApiException("User not authenticated");
+      throw ApiException("Потребителят не е удостоверен");
     }
 
     return {
@@ -45,7 +45,7 @@ class AuthService {
       if (detail is String) {
         errorMessage = detail;
       } else if (detail is List) {
-        errorMessage = detail.map((e) => e['msg']).join(', ');
+        errorMessage = 'Грешен имейл или парола';
       } else {
         errorMessage = 'Грешен имейл или парола';
       }
@@ -99,7 +99,7 @@ class AuthService {
 
     if (response.statusCode != 200) {
       throw ApiException(
-        'Failed to load profile',
+        'Неуспешно зареждане на профил. Моля, опитайте отново',
         statusCode: response.statusCode,
       );
     }

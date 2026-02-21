@@ -14,7 +14,7 @@ class SessionService {
     final token = prefs.getString(AppConstants.accessTokenKey);
 
     if (token == null) {
-      throw ApiException("User not authenticated");
+      throw ApiException("Потребителят не е удостоверен");
     }
 
     return {
@@ -31,7 +31,7 @@ class SessionService {
 
     if (response.statusCode != 200) {
       throw ApiException(
-        "Failed to load sessions",
+        "Неуспешно зареждане на сессите",
         statusCode: response.statusCode,
       );
     }
@@ -49,7 +49,7 @@ class SessionService {
 
     if (response.statusCode != 200) {
       throw ApiException(
-        "Failed to load sessions",
+        "Неуспешно зареждане на сессите",
         statusCode: response.statusCode,
       );
     }
