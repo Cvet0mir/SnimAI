@@ -156,13 +156,14 @@ class _ProfilePageState extends State<ProfilePage> {
                               BorderRadius.circular(12),
                         ),
                         child: Column(
-                          children: const [
+                          children: [
                             ListTile(
                               leading: Icon(Icons.settings),
                               title: Text("Настройки"),
                               trailing: Icon(
                                   Icons.arrow_forward_ios,
                                   size: 16),
+                              onTap: () {},
                             ),
                             Divider(height: 1),
                             ListTile(
@@ -171,6 +172,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               trailing: Icon(
                                   Icons.arrow_forward_ios,
                                   size: 16),
+                              onTap: () {},
                             ),
                           ],
                         ),
