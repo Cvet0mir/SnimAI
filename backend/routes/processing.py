@@ -4,7 +4,8 @@ from fastapi import APIRouter, Depends, status, HTTPException, BackgroundTasks
 from sqlalchemy.orm import Session as DBSession
 
 from ..schemas.session import SessionOut
-from ..db.models.user import User, Session
+from ..db.models.user import User
+from ..db.models.session import Session
 from ..db.models.enums.status_enum import Status
 from ..dependencies import get_current_user, get_db
 
