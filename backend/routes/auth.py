@@ -14,6 +14,7 @@ from ..core.security import (
     decode_token
 )
 from ..dependencies import get_current_user
+from ..services.streak_service import update_user_streak
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -31,6 +32,7 @@ def register(data: UserCreate, db: Annotated[DBSession, Depends(get_db)]):
         name=data.name,
         hashed_password=hash_password(data.password)
     )
+    update_user_streak(user, db)
 
     db.add(user)
     db.commit()
@@ -44,7 +46,15 @@ def me(current_user: Annotated[User, Depends(get_current_user)]):
 
 @router.post("/login", response_model=Token)
 def login(data: UserLogin, db: Annotated[DBSession, Depends(get_db)]):
-    user = db.query(User).filter(User.email == data.email).first()
+    
+    user = (
+        db.query(User)
+        .filter(
+            User.email == data.email
+        )
+        .first()
+    )
+    update_user_streak(user, db)
 
     if not user or not verify_password(data.password, user.hashed_password):
         raise HTTPException(

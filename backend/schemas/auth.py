@@ -21,6 +21,7 @@ class UserOut(BaseORM):
     id: int
     name: str
     email: str
+    current_streak: int
 
 
 class Token(BaseORM):
