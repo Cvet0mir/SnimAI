@@ -17,8 +17,6 @@ class _SessionsPageState extends State<SessionsPage> {
   final SessionService _sessionService = SessionService();
   late Future<List<dynamic>> _sessionsFuture;
 
-  int _selectedIndex = 1;
-
   @override
   void initState() {
     super.initState();
@@ -113,9 +111,6 @@ class _SessionsPageState extends State<SessionsPage> {
       ),
       floatingActionButtonLocation:
           FloatingActionButtonLocation.endFloat,
-
-      bottomNavigationBar:
-          CustomBottomMenu(currentIndex: _selectedIndex),
     );
   }
 }

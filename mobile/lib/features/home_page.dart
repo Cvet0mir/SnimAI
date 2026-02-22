@@ -15,8 +15,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _selectedIndex = 0;
-
   //  Testing session ------------------------------------
   final String _lastSessionTitle = "Linear Algebra Notes";
   final DateTime _lastSessionCreated =
@@ -172,8 +170,6 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-      bottomNavigationBar:
-          CustomBottomMenu(currentIndex: _selectedIndex),
     );
   }
 }

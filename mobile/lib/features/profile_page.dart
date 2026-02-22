@@ -20,7 +20,6 @@ class _ProfilePageState extends State<ProfilePage> {
   late Future<UserModel> _profileFuture;
 
   bool _isLoggingOut = false;
-  int _selectedIndex = 2;
 
   @override
   void initState() {
@@ -209,8 +208,6 @@ class _ProfilePageState extends State<ProfilePage> {
                 );
               },
             ),
-      bottomNavigationBar:
-          CustomBottomMenu(currentIndex: _selectedIndex),
     );
   }
 }
