@@ -23,24 +23,6 @@ class SessionService {
     };
   }
 
-  Future<int> getSessionsCount() async {
-    final url = Uri.parse('$baseUrl${ApiEndpoints.getSessions}');
-    final headers = await _authHeaders();
-
-    final response = await http.get(url, headers: headers);
-
-    if (response.statusCode != 200) {
-      throw ApiException(
-        "Неуспешно зареждане на сессите",
-        statusCode: response.statusCode,
-      );
-    }
-
-    final List<dynamic> data = jsonDecode(response.body);
-
-    return data.length;
-  }
-
   Future<List<dynamic>> getSessions() async {
     final url = Uri.parse('$baseUrl${ApiEndpoints.getSessions}');
     final headers = await _authHeaders();
@@ -48,12 +30,26 @@ class SessionService {
     final response = await http.get(url, headers: headers);
 
     if (response.statusCode != 200) {
+      print(response.statusCode);
       throw ApiException(
-        "Неуспешно зареждане на сессите",
+        "Неуспешно зареждане на сесиите",
         statusCode: response.statusCode,
       );
     }
 
-    return jsonDecode(response.body);
+    if (response.body.isEmpty) return [];
+
+    final decoded = jsonDecode(response.body);
+
+    if (decoded is List) {
+      return decoded;
+    } else {
+      throw ApiException("Непознат формат на данните от сървъра");
+    }
+  }
+
+  Future<int> getSessionsCount() async {
+    final sessions = await getSessions();
+    return sessions.length;
   }
 }

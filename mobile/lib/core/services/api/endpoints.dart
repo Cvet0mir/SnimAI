@@ -9,10 +9,11 @@ class ApiEndpoints {
   static const String updateProfile = '$_base/auth/me';
   static const String deleteProfile = '$_base/auth/me';
 
-  static const String createSession = '$_base/sessions';
-  static const String getSessions = '$_base/sessions';
+  static const String createSession = '$_base/sessions/';
+  static const String getSessions = '$_base/sessions/';
   static String getSessionById(int sessionId) => '$_base/sessions/$sessionId';
   static String deleteSession(int sessionId) => '$_base/sessions/$sessionId';
+  static String addNoteToSession(int sessionId) => '$_base/sessions/$sessionId/notes';
 
   static const String addNote = '$_base/notes';
   static const String getNotes = '$_base/notes';
