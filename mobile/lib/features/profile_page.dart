@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../core/widgets/app_scaffold.dart';
-import '../core/widgets/navigation_menu.dart';
 import '../core/widgets/loading_indicator.dart';
 
 import '../core/services/auth/auth_service.dart';

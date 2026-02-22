@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../core/widgets/app_scaffold.dart';
-import '../core/widgets/navigation_menu.dart';
 import '../core/widgets/primary_button.dart';
 
 import '../core/services/auth/auth_service.dart';

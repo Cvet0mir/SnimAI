@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../core/widgets/app_scaffold.dart';
-import '../core/widgets/navigation_menu.dart';
 import '../core/widgets/loading_indicator.dart';
 import '../core/services/sessions/session_service.dart';
 
@@ -81,7 +80,7 @@ class _SessionsPageState extends State<SessionsPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      session['title'],
+                      session['name'],
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -104,8 +103,18 @@ class _SessionsPageState extends State<SessionsPage> {
       ),
 
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(context, '/create-session');
+        onPressed: () async {
+          final result = await Navigator.pushNamed(
+            context,
+            '/create-session',
+          );
+
+          if (result == true) {
+            setState(() {
+              _sessionsFuture =
+                  _sessionService.getSessions();
+            });
+          }
         },
         child: const Icon(Icons.add),
       ),
