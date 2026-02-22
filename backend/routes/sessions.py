@@ -158,9 +158,10 @@ async def create_note(
         content = await image.read()
         buffer.write(content)
 
+    public_path = f"/uploads/{unique_filename}"
     note = Note(
         user_id=current_user.id,
-        image_path=str(file_path),
+        image_path=public_path,
         raw_ocr_text=None,
         clean_ocr_text=None,
         language="bg",

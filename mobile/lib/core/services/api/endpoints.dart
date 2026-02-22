@@ -14,6 +14,10 @@ class ApiEndpoints {
   static String getSessionById(int sessionId) => '$_base/sessions/$sessionId';
   static String deleteSession(int sessionId) => '$_base/sessions/$sessionId';
   static String addNoteToSession(int sessionId) => '$_base/sessions/$sessionId/notes';
+  static String getSessionNotes(int sessionId) => '$_base/sessions/$sessionId/notes';
+  static String getSessionSummary(int sessionId) => '$_base/sessions/$sessionId/summary';
+  static String getSessionQuizzes(int sessionId) => '$_base/sessions/$sessionId/quizzes';
+  static String getSessionQuizById(int sessionId, int quizId) => '$_base/sessions/$sessionId/quizzes/$quizId';
 
   static const String addNote = '$_base/notes';
   static const String getNotes = '$_base/notes';

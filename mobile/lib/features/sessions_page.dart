@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import '../core/widgets/app_scaffold.dart';
 import '../core/widgets/loading_indicator.dart';
 import '../core/services/sessions/session_service.dart';
+import '../features/session_details_page.dart';
 
 class SessionsPage extends StatefulWidget {
   const SessionsPage({super.key});
@@ -56,45 +57,24 @@ class _SessionsPageState extends State<SessionsPage> {
           }
 
           return ListView.builder(
-            padding: const EdgeInsets.all(16),
             itemCount: sessions.length,
             itemBuilder: (context, index) {
               final session = sessions[index];
 
-              return Container(
-                width: double.infinity,
-                margin: const EdgeInsets.only(bottom: 16),
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(14),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black,
-                      blurRadius: 8,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      session['name'],
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+              return Card(
+                child: ListTile(
+                  title: Text(session["name"]),
+                  subtitle: Text(_formatDate(session["created_at"])),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => SessionDetailsPage(
+                          sessionId: session["id"],
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      _formatDate(session['created_at']),
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey.shade600,
-                      ),
-                    ),
-                  ],
+                    );
+                  },
                 ),
               );
             },
