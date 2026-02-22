@@ -1,4 +1,4 @@
-from typing import Annotated, Optional, Literal
+from typing import Annotated, Optional
 from datetime import datetime
 from pydantic import Field
 
@@ -8,11 +8,11 @@ class SessionBase(BaseORM):
     name: Annotated[str, Field(max_length=125)]
 
 class SessionCreate(SessionBase):
-    status: Literal["pending", "running", "done", "failed"]
+    status: str
 
 class SessionOut(SessionBase):
     id: int
     user_id: int
-    status: Literal["pending", "running", "done", "failed"]
+    status: str
     created_at: datetime
     finished_at: Optional[datetime]

@@ -1,8 +1,8 @@
 import enum
 
 class Status(enum.Enum):
-    pending = "pending"
-    running = "running"
-    done = "done"
-    failed = "failed"
+    pending = "PENDING"
+    running = "RUNNING"
+    finished = "FINISHED"
+    failed = "FAILED"
 
