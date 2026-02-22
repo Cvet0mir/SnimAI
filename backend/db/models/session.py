@@ -13,13 +13,7 @@ class Session(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id", name="fk_sessions_user"))
     name: Mapped[str_100] = mapped_column(unique=True)
-    status: Mapped[Status] = mapped_column(
-        Enum(
-            Status, 
-            name="session_status",
-            create_type=False
-        )
-    )
+    status: Mapped[str_100] = mapped_column()
     created_at: Mapped[datetime_tz] = mapped_column(default=func.now())
     finished_at: Mapped[datetime_tz | None] = mapped_column(nullable=True)
 
