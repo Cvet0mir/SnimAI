@@ -74,7 +74,7 @@ def get_result(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Сесията не е намерена"
         )
-    if session.status != Status.done:
+    if session.status != Status.finished:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Обработването не е завършило"

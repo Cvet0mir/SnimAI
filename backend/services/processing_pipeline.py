@@ -43,7 +43,7 @@ def run_processing_pipeline(session_id: int, num_questions: int):
 
         session.summaries.append(summary)
         session.quizzes.extend(quiz)
-        session.status = Status.done
+        session.status = Status.finished
 
         db.commit()
         db.refresh(session)

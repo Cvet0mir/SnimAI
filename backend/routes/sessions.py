@@ -7,6 +7,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status, File, Form, UploadFile
 from sqlalchemy.orm import Session as DBSession
+from sqlalchemy.exc import SQLAlchemyError
 
 from ..core.config import settings
 from ..dependencies import get_db, get_current_user
@@ -39,20 +40,29 @@ def create_session(
     existing = db.query(Session).filter(Session.name == session_data.name).first()
     if existing:
         raise HTTPException(
-            status_code=400, 
+            status_code=400,
             detail="Сесия с това име вече съществува. Моля, преименувайте новата"
         )
+
+    status_value = session_data.status.lower() if isinstance(session_data.status, str) else session_data.status
 
     session = Session(
         user_id=current_user.id,
         name=session_data.name,
-        status=Status(session_data.status),
+        status=status_value
     )
     db.add(session)
-
     db.commit()
     db.refresh(session)
-    return session
+
+    return SessionOut(
+        id=session.id,
+        user_id=session.user_id,
+        name=session.name,
+        status=session.status.lower(),
+        created_at=session.created_at,
+        finished_at=session.finished_at,
+    )
 
 
 @router.get("/", response_model=list[SessionOut])
@@ -125,7 +135,6 @@ def delete_session(
 async def create_note(
     session_id: int,
     image: Annotated[UploadFile, File(...)],
-    language: Annotated[str, Form(...)],
     db: Annotated[DBSession, Depends(get_db)],
     current_user: Annotated[User, Depends(get_current_user)],
 ):
@@ -154,7 +163,7 @@ async def create_note(
         image_path=str(file_path),
         raw_ocr_text=None,
         clean_ocr_text=None,
-        language=language,
+        language="bg",
     )
     note.sessions.append(session)
 
