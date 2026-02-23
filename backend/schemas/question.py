@@ -1,9 +1,11 @@
+from typing import Optional
+
 from .orm_base import BaseORM
 
 
 class QuestionBase(BaseORM):
     question: str
-    options: list[str]
+    options: Optional[list[str]] = None
     correct_answer: str
 
 
