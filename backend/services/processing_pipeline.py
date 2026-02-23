@@ -2,6 +2,9 @@ from pathlib import Path
 
 from sqlalchemy.orm import Session as DBSession
 from ..db.models.session import Session
+from ..db.models.summary import Summary
+from ..db.models.quiz import Quiz
+from ..db.models.question import Question
 from ..db.models.enums.status_enum import Status
 
 from ..dependencies import get_db
@@ -35,8 +38,10 @@ def run_processing_pipeline(session_id: int, num_questions: int):
         full_text = ""
         for note in session.notes:
             img_path = UPLOAD_DIR / Path(note.image_path).name
+            print("Got the 1st path")
             recognized_text = ocr_service.extract_text(str(img_path))
             full_text += recognized_text + "\n"
+            print("Added the text for one img")
         print("Extracted the text")
 
         chunks = chunk_text(full_text)
@@ -54,8 +59,19 @@ def run_processing_pipeline(session_id: int, num_questions: int):
         quiz = create_quiz(context_facts, num_questions=num_questions)
         print("Made tests")
 
-        session.summaries.append(summary)
-        session.quizzes.extend(quiz)
+        summary_obj = Summary(
+            session_id=session.id,
+            summary_text=summary,
+            used_model="llama-3.3-70b-versatile"
+        )
+        session.summaries.append(summary_obj)
+
+        quiz_obj = Quiz(session_id=session.id)
+        quiz_obj.questions = [
+            Question(question=item["question"], correct_answer=item["correct_answer"])
+            for item in quiz
+        ]
+        session.quizzes.append(quiz_obj)
         session.status = Status.finished.value
         print("extended it")
 
