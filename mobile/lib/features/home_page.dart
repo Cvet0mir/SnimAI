@@ -5,6 +5,7 @@ import '../core/widgets/app_scaffold.dart';
 import '../core/widgets/primary_button.dart';
 
 import '../core/services/auth/auth_service.dart';
+import '../core/services/sessions/session_service.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -14,15 +15,55 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  //  Testing session ------------------------------------
-  final String _lastSessionTitle = "Linear Algebra Notes";
-  final DateTime _lastSessionCreated =
-      DateTime.now().subtract(const Duration(hours: 5));
+  final SessionService _sessionService = SessionService();
 
-  final DateTime _lastActiveDate =
-      DateTime.now().subtract(const Duration(days: 1));
+  Map<String, dynamic>? _lastSession;
+  bool _isLoadingSession = true;
 
-  // ------------------------------------------------------
+  String _name = '';
+  int _streak = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfile();
+    _loadLastSession();
+  }
+
+  Future<void> _loadProfile() async {
+    final user = await AuthService().getProfile();
+    setState(() {
+      _name = user.name;
+      _streak = user.currentStreak;
+    });
+  }
+
+  Future<void> _loadLastSession() async {
+    try {
+      final sessions = await _sessionService.getSessions();
+
+      if (sessions.isNotEmpty) {
+        // Sort sessions by created_at descending (newest first)
+        sessions.sort((a, b) =>
+            DateTime.parse(b["created_at"])
+                .compareTo(DateTime.parse(a["created_at"])));
+
+        setState(() {
+          _lastSession = sessions.first;
+          _isLoadingSession = false;
+        });
+      } else {
+        setState(() {
+          _lastSession = null;
+          _isLoadingSession = false;
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _isLoadingSession = false;
+      });
+    }
+  }
 
   String _getGreeting() {
     final hour = DateTime.now().hour;
@@ -50,24 +91,6 @@ class _HomePageState extends State<HomePage> {
 
     final dayOfYear = int.parse(DateFormat("D").format(DateTime.now()));
     return motivations[dayOfYear % motivations.length];
-  }
-
-  String _name = '';
-  // the way for its increment will be rethought
-  int _streak = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadProfile();
-  }
-
-  Future<void> _loadProfile() async {
-    final user = await AuthService().getProfile();
-    setState(() {
-      _name = user.name;
-      _streak = user.currentStreak;
-    });
   }
 
   @override
@@ -111,8 +134,15 @@ class _HomePageState extends State<HomePage> {
               PrimaryButton(
                 height: 55,
                 text: 'Започнете нова сесия',
-                onPressed: () {},
-                icon: Icon(Icons.add),
+                onPressed: () async {
+                  final result =
+                      await Navigator.pushNamed(context, '/create-session');
+
+                  if (result == true) {
+                    _loadLastSession();
+                  }
+                },
+                icon: const Icon(Icons.add),
               ),
 
               const SizedBox(height: 30),
@@ -124,19 +154,33 @@ class _HomePageState extends State<HomePage> {
 
               const SizedBox(height: 10),
 
-              Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: ListTile(
-                  title: Text(_lastSessionTitle),
-                  subtitle: Text(
-                    "Created ${DateFormat("MMM d, HH:mm").format(_lastSessionCreated)}",
+              if (_isLoadingSession)
+                const Center(child: CircularProgressIndicator())
+              else if (_lastSession == null)
+                const Text("Все още няма създадени сесии.")
+              else
+                Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
                   ),
-                  trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                  onTap: () {},
+                  child: ListTile(
+                    title: Text(_lastSession!["name"]),
+                    subtitle: Text(
+                      "Created ${DateFormat("MMM d, HH:mm").format(
+                        DateTime.parse(_lastSession!["created_at"]),
+                      )}",
+                    ),
+                    trailing:
+                        const Icon(Icons.arrow_forward_ios, size: 16),
+                    onTap: () {
+                      Navigator.pushNamed(
+                        context,
+                        '/session-details',
+                        arguments: _lastSession!["id"],
+                      );
+                    },
+                  ),
                 ),
-              ),
 
               const SizedBox(height: 30),
 
