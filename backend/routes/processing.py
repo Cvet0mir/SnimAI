@@ -27,14 +27,14 @@ def start_processing(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Не можете да посещавате сесия на друг потребител"
         )
-    if session.status != Status.pending:
+    if session.status != Status(Status.pending).value:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Тази сесия вече се обработва"
         )
     
     session.status = Status.running
-    background_tasks.add_task(run_processing_pipeline, session_id)
+    background_tasks.add_task(run_processing_pipeline, session_id, 5)
 
     return {"message": "Обработването започна"}
 
@@ -55,7 +55,7 @@ def get_status(
 
     return {
         "session_id": session.id,
-        "status": session.status.value,
+        "status": session.status,
         "created_at": session.created_at,
         "finished_at": session.finished_at
     }
@@ -74,7 +74,7 @@ def get_result(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Сесията не е намерена"
         )
-    if session.status != Status.finished:
+    if session.status != Status.finished.value:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Обработването не е завършило"
