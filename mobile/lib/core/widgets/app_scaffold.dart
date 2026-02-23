@@ -6,7 +6,7 @@ class AppScaffold extends StatelessWidget {
   final Widget? bottomNavigationBar;
   final Widget? floatingActionButton;
   final FloatingActionButtonLocation? floatingActionButtonLocation;
-  final bool keepBackButton;
+  final bool showBackButton;
 
   const AppScaffold({
     super.key,

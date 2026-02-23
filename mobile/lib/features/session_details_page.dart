@@ -102,89 +102,34 @@ class _SessionDetailsPageState extends State<SessionDetailsPage> {
             ),
             const SizedBox(height: 8),
 
-            if (quizzes.isEmpty)
-  const Text("Няма тестове.")
-else
-  Column(
-    children: quizzes.map<Widget>((quiz) {
-      final questions = quiz["questions"] as List<dynamic>? ?? [];
-
-      return Card(
-        margin: const EdgeInsets.only(bottom: 16),
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Тест #${quiz["id"]}",
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 12),
-
-              ...questions.map<Widget>((q) {
-                final options = q["options"] as List<dynamic>? ?? [];
-
-                return Container(
-                    margin: const EdgeInsets.only(bottom: 16),
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey.shade300),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          q["question"] ?? "",
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-
-                        ...options.map<Widget>((option) {
-                          final isCorrect =
-                              option == q["correct_answer"];
-
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 2),
-                            child: Text(
-                              option,
-                              style: TextStyle(
-                                color: isCorrect
-                                    ? Colors.green
-                                    : Colors.black,
-                                fontWeight: isCorrect
-                                    ? FontWeight.bold
-                                    : FontWeight.normal,
+            if (notes.isEmpty)
+              const Text("Няма качени бележки.")
+            else
+              Column(
+                children: notes.map((note) {
+                  return Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (note["image_path"] != null)
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: Image.network(
+                                '${AppConstants.baseUrl}${note["image_path"]}',
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return const Text("Грешка при зареждане на изображението");
+                                },
                               ),
                             ),
-                          );
-                        }).toList(),
-
-                        const SizedBox(height: 6),
-
-                        Text(
-                          "Правилен отговор: ${q["correct_answer"]}",
-                          style: const TextStyle(
-                            color: Colors.green,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   );
                 }).toList(),
-              ],
-            ),
-          ),
-        );
-      }).toList(),
-    ),
+              ),
 
             const SizedBox(height: 24),
 
@@ -211,23 +156,29 @@ else
             else
               Column(
                 children: quizzes.map((quiz) {
-                  return Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            quiz["questions"],
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
+                  final questions = quiz["questions"] as List<dynamic>? ?? [];
+
+                  return Column(
+                    children: questions.map((q) {
+                      return Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(12),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                q["question"] ?? "",
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 6),
+                              Text("Отговор: ${q["correct_answer"] ?? ""}"),
+                            ],
                           ),
-                          const SizedBox(height: 6),
-                          Text("Отговор: ${quiz["answer"]}"),
-                        ],
-                      ),
-                    ),
+                        ),
+                      );
+                    }).toList(),
                   );
                 }).toList(),
               ),
