@@ -9,6 +9,7 @@ import '../core/services/api/exceptions.dart';
 import '../core/services/api/endpoints.dart';
 import '../core/config/app_constants.dart';
 import '../core/widgets/app_scaffold.dart';
+import '../core/widgets/loading_indicator.dart';
 
 class CreateSessionPage extends StatefulWidget {
   const CreateSessionPage({super.key});
@@ -45,6 +46,45 @@ class _CreateSessionPageState extends State<CreateSessionPage> {
     }
   }
 
+  Future<void> _waitForProcessing(int sessionId, String token) async {
+    bool isFinished = false;
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const LoadingIndicator(),
+    );
+
+    while (!isFinished) {
+      await Future.delayed(const Duration(seconds: 2));
+
+      final response = await http.get(
+        Uri.parse(
+          '${AppConstants.baseUrl}${ApiEndpoints.getProcessingStatus(sessionId)}',
+        ),
+        headers: {
+          "Authorization": "Bearer $token",
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final status = data["status"];
+
+        if (status == "finished") {
+          isFinished = true;
+        }
+      } else {
+        Navigator.pop(context);
+        throw ApiException("Грешка при проверка на статуса");
+      }
+    }
+
+    if (mounted) {
+      Navigator.pop(context);
+    }
+  }
+
   Future<void> _createSession() async {
     if (_sessionNameController.text.trim().isEmpty) return;
 
@@ -54,7 +94,9 @@ class _CreateSessionPageState extends State<CreateSessionPage> {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString(AppConstants.accessTokenKey);
 
-      if (token == null) throw ApiException("Потребителят не е удостоверен");
+      if (token == null) {
+        throw ApiException("Потребителят не е удостоверен");
+      }
 
       final sessionResponse = await http.post(
         Uri.parse('${AppConstants.baseUrl}${ApiEndpoints.createSession}'),
@@ -69,7 +111,8 @@ class _CreateSessionPageState extends State<CreateSessionPage> {
       );
 
       if (sessionResponse.statusCode != 201) {
-        throw ApiException("Грешка при създаване на сесия: ${sessionResponse.body}");
+        throw ApiException(
+            "Грешка при създаване на сесия: ${sessionResponse.body}");
       }
 
       final sessionData = jsonDecode(sessionResponse.body);
@@ -78,7 +121,9 @@ class _CreateSessionPageState extends State<CreateSessionPage> {
       for (final image in _selectedImages) {
         final request = http.MultipartRequest(
           "POST",
-          Uri.parse('${AppConstants.baseUrl}${ApiEndpoints.addNoteToSession(sessionId)}'),
+          Uri.parse(
+            '${AppConstants.baseUrl}${ApiEndpoints.addNoteToSession(sessionId)}',
+          ),
         );
 
         request.headers["Authorization"] = "Bearer $token";
@@ -90,11 +135,27 @@ class _CreateSessionPageState extends State<CreateSessionPage> {
         final response = await request.send();
 
         if (response.statusCode != 201) {
-          throw ApiException("Грешка при качване на изображение (код: ${response.statusCode})");
+          throw ApiException(
+              "Грешка при качване на изображение (код: ${response.statusCode})");
         }
       }
 
+      final processingResponse = await http.post(
+        Uri.parse(
+            '${AppConstants.baseUrl}${ApiEndpoints.startProcessing(sessionId)}'),
+        headers: {
+          "Authorization": "Bearer $token",
+        },
+      );
+
+      if (processingResponse.statusCode != 202) {
+        throw ApiException("Грешка при стартиране на обработката");
+      }
+
+      await _waitForProcessing(sessionId, token);
+
       if (!mounted) return;
+
       Navigator.pop(context, true);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
