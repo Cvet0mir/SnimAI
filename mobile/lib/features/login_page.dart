@@ -31,7 +31,7 @@ class _LoginPageState extends State<LoginPage> {
     }
 
     if (!Validators.isValidPassword(password)) {
-      Helpers.showSnackBar(context, "Паролата трябва да е поне 6 символа дълга");
+      Helpers.showSnackBar(context, "Паролата трябва да е поне 8 символа дълга");
       return;
     }
 

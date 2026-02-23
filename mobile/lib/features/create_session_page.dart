@@ -86,7 +86,9 @@ class _CreateSessionPageState extends State<CreateSessionPage> {
   }
 
   Future<void> _createSession() async {
-    if (_sessionNameController.text.trim().isEmpty) return;
+    if (_sessionNameController.text.trim().isEmpty) {
+      throw ApiException("Трябва да дадете име на сесията")
+    };
 
     setState(() => _isLoading = true);
 

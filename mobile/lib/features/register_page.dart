@@ -33,7 +33,7 @@ class _RegisterPageState extends State<RegisterPage> {
     }
 
     if (!Validators.isValidPassword(password)) {
-      Helpers.showSnackBar(context, "Паролата трябва да е поне 6 символа дълга");
+      Helpers.showSnackBar(context, "Паролата трябва да е поне 8 символа дълга");
       return;
     }
 
@@ -59,6 +59,7 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return AppScaffold(
       title: 'Регистрация',
+      showBackButton: false,
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: _isLoading
