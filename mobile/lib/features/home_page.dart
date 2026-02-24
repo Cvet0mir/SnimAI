@@ -147,9 +147,19 @@ class _HomePageState extends State<HomePage> {
 
               const SizedBox(height: 30),
 
-              Text(
-                "Last Session",
-                style: Theme.of(context).textTheme.titleMedium,
+              PrimaryButton(
+                text: 'Виж последната сесия',
+                height: 55,
+                onPressed: () {
+                  if (_lastSession != null) {
+                    Navigator.pushNamed(
+                      context,
+                      '/session-details',
+                      arguments: _lastSession!["id"],
+                    );
+                  }
+                },
+                icon: const Icon(Icons.arrow_forward),
               ),
 
               const SizedBox(height: 10),
