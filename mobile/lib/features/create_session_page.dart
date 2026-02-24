@@ -86,9 +86,25 @@ class _CreateSessionPageState extends State<CreateSessionPage> {
   }
 
   Future<void> _createSession() async {
+    if (_sessionNameController.text.trim().isEmpty && _selectedImages.isNotEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Моля, въведете име на сесията преди да качите изображение."),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
     if (_sessionNameController.text.trim().isEmpty) {
-      throw ApiException("Трябва да дадете име на сесията");
-    };
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Моля, въведете име на сесията."),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
 
     setState(() => _isLoading = true);
 
