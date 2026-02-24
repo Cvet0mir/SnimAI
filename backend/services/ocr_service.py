@@ -1,84 +1,66 @@
 import cv2
 import numpy as np
-import paddle
-
-paddle.set_device("cpu")
-paddle.set_flags({'FLAGS_use_mkldnn': True})
-
 from paddleocr import PaddleOCR
-from .recognition_service import HandwritingRecognitionService
-from .image_preprocessor import load_and_preprocess
-
 
 class OCRService:
-    def __init__(self):
-        self.detector = PaddleOCR(
-            use_angle_cls=True,
-            lang='bg',
-            det_limit_side_len=1536,
-        )
+    def __init__(self, lang: str = "bg", preprocess: bool = True):
+        self.ocr = PaddleOCR(lang=lang, use_textline_orientation=True)
+        self.preprocess = preprocess
 
-        self.recognizer = HandwritingRecognitionService()
+    @staticmethod
+    def load_and_preprocess(img_path: str) -> np.ndarray:
+        img = cv2.imread(img_path)
+        if img is None:
+            raise FileNotFoundError(f"Image not found: {img_path}")
+        print(f"[Preprocess] Image loaded: {img.shape}")
 
-    def extract_text(self, image_path: str) -> str:
-        print(f"[OCRService] Loading and preprocessing {image_path}")
+        lab = cv2.cvtColor(img, cv2.COLOR_BGR2LAB)
+        l, a, b = cv2.split(lab)
+        clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8,8))
+        l = clahe.apply(l)
+        lab = cv2.merge((l, a, b))
+        img = cv2.cvtColor(lab, cv2.COLOR_LAB2BGR)
+        print("[Preprocess] Applied CLAHE")
 
-        img = load_and_preprocess(image_path)
+        img = cv2.fastNlMeansDenoisingColored(img, None, 10, 10, 7, 21)
+        print("[Preprocess] Denoised")
 
-        result = self.detector.ocr(img)
+        kernel = np.array([[0,-1,0], [-1,5,-1], [0,-1,0]])
+        img = cv2.filter2D(img, -1, kernel)
+        print("[Preprocess] Applied sharpening filter")
 
-        if not result:
-            print("[OCRService] No detection result.")
-            return ""
+        img = OCRService.pad_to_multiple(img, multiple=32)
+        return img
 
-        if isinstance(result, dict):
-            dt_polys = result.get("dt_polys", [])
-            rec_scores = result.get("rec_scores", [])
+    @staticmethod
+    def pad_to_multiple(img: np.ndarray, multiple: int = 32) -> np.ndarray:
+        h, w = img.shape[:2]
+        new_h = ((h + multiple - 1) // multiple) * multiple
+        new_w = ((w + multiple - 1) // multiple) * multiple
+        pad_bottom = new_h - h
+        pad_right = new_w - w
+        padded = cv2.copyMakeBorder(img, 0, pad_bottom, 0, pad_right,
+                                    borderType=cv2.BORDER_CONSTANT, value=[0,0,0])
+        print(f"[Preprocess] Padded image {w}x{h} → {new_w}x{new_h}")
+        return padded
 
+    def extract_text(self, img_path: str) -> str:
+        print(f"[OCRService] Processing {img_path}")
+        if self.preprocess:
+            img = self.load_and_preprocess(img_path)
         else:
-            print("[OCRService] Unexpected result format.")
-            return ""
+            img = img_path
 
-        if not dt_polys:
-            print("[OCRService] No text boxes detected.")
-            return ""
+        result = self.ocr.predict(img)
+        lines = []
 
-        cropped_lines = []
-        sorted_indices = sorted(
-            range(len(dt_polys)),
-            key=lambda i: (dt_polys[i][0][1], dt_polys[i][0][0])
-        )
+        for page in result:
+            rec_texts = page.get("rec_texts", [])
+            rec_scores = page.get("rec_scores", [])
+            for text, score in zip(rec_texts, rec_scores):
+                print(f"Detected: {text}, confidence: {score:.3f}")
+                if score >= 0.2:
+                    lines.append(text.strip())
 
-        for idx in sorted_indices:
-            box = dt_polys[idx]
+        return "\n".join(lines)
 
-            if rec_scores and rec_scores[idx] < 0.4:
-                continue
-
-            crop = self._crop_polygon(img, box)
-
-            if crop is None or crop.size == 0:
-                continue
-
-            try:
-                text = self.recognizer.recognize(crop)
-                if text.strip():
-                    cropped_lines.append(text.strip())
-            except Exception as e:
-                print(f"[OCRService] Recognition error: {e}")
-
-        full_text = "\n".join(cropped_lines)
-
-        return full_text
-
-    def _crop_polygon(self, image: np.ndarray, polygon: np.ndarray) -> np.ndarray:
-        try:
-            rect = cv2.boundingRect(polygon.astype(np.int32))
-            x, y, w, h = rect
-
-            cropped = image[y:y+h, x:x+w]
-
-            return cropped
-        except Exception as e:
-            print(f"[OCRService] Crop error: {e}")
-            return None
