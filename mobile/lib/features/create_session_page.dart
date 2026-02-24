@@ -90,7 +90,6 @@ class _CreateSessionPageState extends State<CreateSessionPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text("Моля, въведете име на сесията преди да качите изображение."),
-          backgroundColor: Colors.red,
         ),
       );
       return;
@@ -100,7 +99,6 @@ class _CreateSessionPageState extends State<CreateSessionPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text("Моля, въведете име на сесията."),
-          backgroundColor: Colors.red,
         ),
       );
       return;
