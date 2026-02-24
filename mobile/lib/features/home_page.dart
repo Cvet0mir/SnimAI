@@ -147,22 +147,27 @@ class _HomePageState extends State<HomePage> {
 
               const SizedBox(height: 30),
 
-              PrimaryButton(
-                text: 'Виж последната сесия',
-                height: 55,
-                onPressed: () {
-                  if (_lastSession != null) {
-                    Navigator.pushNamed(
-                      context,
-                      '/session-details',
-                      arguments: _lastSession!["id"],
-                    );
-                  }
-                },
-                icon: const Icon(Icons.arrow_forward),
-              ),
+              // PrimaryButton(
+              //   text: 'Виж последната сесия',
+              //   height: 55,
+              //   onPressed: () {
+              //     if (_lastSession != null) {
+              //       Navigator.pushNamed(
+              //         context,
+              //         '/session-details',
+              //         arguments: _lastSession!["id"],
+              //       );
+              //     }
+              //   },
+              //   icon: const Icon(Icons.arrow_forward),
+              // ),
 
               const SizedBox(height: 10),
+
+              Text(
+                "Последна сесия",
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
 
               if (_isLoadingSession)
                 const Center(child: CircularProgressIndicator())

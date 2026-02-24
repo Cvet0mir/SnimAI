@@ -54,7 +54,12 @@ def login(data: UserLogin, db: Annotated[DBSession, Depends(get_db)]):
         )
         .first()
     )
-    update_user_streak(user, db)
+
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Грешен имейл или парола"
+        )
 
     if not user or not verify_password(data.password, user.hashed_password):
         raise HTTPException(
@@ -62,6 +67,8 @@ def login(data: UserLogin, db: Annotated[DBSession, Depends(get_db)]):
             detail="Грешен имейл или парола",
         )
 
+    update_user_streak(user, db)
+    
     access_token = create_access_token(user.id)
     refresh_token = create_refresh_token(user.id)
 

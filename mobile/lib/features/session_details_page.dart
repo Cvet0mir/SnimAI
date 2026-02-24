@@ -141,7 +141,7 @@ class _SessionDetailsPageState extends State<SessionDetailsPage> {
 
             summary == null
                 ? const Text("Няма обобщение.")
-                : Text(summary!["content"] ?? ""),
+                : Text(summary!["summary_text"] ?? ""),
 
             const SizedBox(height: 24),
 
