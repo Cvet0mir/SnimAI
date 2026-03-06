@@ -12,7 +12,7 @@ ALGORITHM = settings.JWT_ALGORITHM
 ACCESS_EXPIRE_MIN = settings.JWT_ACCESS_TOKEN_EXPIRE_MINUTES
 REFRESH_EXPIRE_DAYS = settings.JWT_REFRESH_TOKEN_EXPIRE_DAYS
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
 
 def hash_password(password: str) -> str:
     return pwd_context.hash(password)
